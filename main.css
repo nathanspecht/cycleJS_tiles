@@ -1,0 +1,15 @@
+#tile-container {
+    height: 300px;
+    width: 500px;
+    background-color: lightgray;
+    position: relative;
+    overflow: hidden;
+}
+
+.tile {
+    position: absolute;
+    height: 100px;
+    width: 100px;
+    background-color: blue;
+    border: 1px solid black;
+}
