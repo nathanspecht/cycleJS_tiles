@@ -11,7 +11,8 @@ function intent(DOMSource, container) {
     tileContainerMouseUpOrLeave$ = 
       Rx.Observable.merge(
         tileContainerMouseUp$,
-        tileContainerMouseLeave$
+        tileContainerMouseLeave$.
+          filter(event => "#" + event.target.id === container.namespace[0])
       ),
     
     coord$ = 
@@ -66,15 +67,7 @@ function model(change$) {
 
 function view(state$) {
   return state$.map(state =>
-    div('.tile', {
-      style: {
-        left: state.left, 
-        top: state.top, 
-        backgroundColor: state.backgroundColor, 
-        zIndex: state.zIndex, 
-        boxShadow: state.boxShadow
-      }
-    })
+    div('.tile', { style: state })
   );
 }
 
@@ -90,6 +83,7 @@ function Tile(sources, container) {
 
 function main(sources) {
   const tileContainer = sources.DOM.select('#tile-container');
+
   const tileVTree$s = [];
 
   for (let i = 0; i < NUM_TILES; i++) {
