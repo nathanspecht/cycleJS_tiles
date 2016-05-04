@@ -12,4 +12,13 @@
     width: 50px;
     background-color: blue;
     border: 1px solid black;
+    color: white;
+    font-size: 40px;
+    font-family: sans-serif;
+    -webkit-user-select: none;
+    text-align: center;
+}
+
+.tile:hover {
+  cursor: pointer;
 }

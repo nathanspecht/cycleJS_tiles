@@ -1,6 +1,12 @@
 const {div, makeDOMDriver} = CycleDOM;
 const isolate = CycleIsolate;
-const NUM_TILES = 5;
+const NUM_TILES = 15;
+
+function snapToGrid(x) {
+  var snap = x - x % 50;
+  snap = Math.max(0, snap);
+  return snap;
+}
 
 function intent(DOMSource, container) {
   var tileMouseDown$ = DOMSource.select('.tile').events('mousedown'),
@@ -22,8 +28,8 @@ function intent(DOMSource, container) {
             takeUntil(tileContainerMouseUpOrLeave$).
             map((mouseMoveEvent) => {
               return {
-                pageX: mouseMoveEvent.pageX - contactPoint.offsetX,
-                pageY: mouseMoveEvent.pageY - contactPoint.offsetY
+                pageX: snapToGrid(mouseMoveEvent.pageX - contactPoint.offsetX),
+                pageY: snapToGrid(mouseMoveEvent.pageY - contactPoint.offsetY)
               };
             });
         }),
@@ -65,16 +71,16 @@ function model(change$) {
   });
 }
 
-function view(state$) {
+function view(state$, letter) {
   return state$.map(state =>
-    div('.tile', { style: state })
+    div('.tile', { style: state }, letter)
   );
 }
 
-function Tile(sources, container) {
+function Tile(sources, container, letter) {
   const change$ = intent(sources.DOM, container);
   const state$ = model(change$);
-  const vtree$ = view(state$);
+  const vtree$ = view(state$, letter);
 
   return {
     DOM: vtree$
@@ -87,8 +93,9 @@ function main(sources) {
   const tileVTree$s = [];
 
   for (let i = 0; i < NUM_TILES; i++) {
+    var letter = String.fromCharCode(Math.floor(Math.random() * 25 + 97));
     tileVTree$s.push(
-      isolate(Tile)(sources, tileContainer).DOM
+      isolate(Tile)(sources, tileContainer, letter).DOM
     );    
   }
 
